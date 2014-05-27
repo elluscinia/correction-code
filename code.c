@@ -342,8 +342,8 @@ int main(int argc, char * argv[]) {
 	else 
 	{
 		FILE * f;
-		f = fopen(argv[4], "r");
-		fgets(ExtKey, 288, f);
+		f = fopen(argv[4], "rb");
+		fread(ExtKey, 1, 256, f);
 		setup(ExtKey);
 		fclose(f);
 		READ(argv[1], argv[2], argv[3]);
