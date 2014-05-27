@@ -3,7 +3,6 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include <locale.h>
 #include <memory.h>
 
 #define MODULO 4294967296
@@ -333,12 +332,6 @@ void READ(char * DESTANATION, char * FINAL, char * DESTANATION2) {
 
 
 int main(int argc, char * argv[]) {
-	FILE * f;
-	f = fopen(argv[4], "r");
-	fgets(ExtKey, 288, f);
-	setup(ExtKey);
-	fclose(f);
-	setlocale(LC_ALL, "rus");
 	if (strcmp("help", argv[1]) == 0) {
 		int OPR = 0;
 		printf("\t\t\tCIPHERUNICORN-A\nIn cryptography, CIPHERUNICORN-A is a block cipher created by NEC in 2000.\nIt is among the cryptographic techniques recommended for Japanese government use.");
@@ -365,6 +358,11 @@ int main(int argc, char * argv[]) {
 		}
 	}
 	else {
+			FILE * f;
+	f = fopen(argv[4], "r");
+	fgets(ExtKey, 288, f);
+	setup(ExtKey);
+	fclose(f);
 		READ(argv[1], argv[2], argv[3]);
 	}
 	return 0;
