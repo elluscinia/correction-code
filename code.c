@@ -332,37 +332,20 @@ void READ(char * DESTANATION, char * FINAL, char * DESTANATION2) {
 
 
 int main(int argc, char * argv[]) {
-	if (strcmp("help", argv[1]) == 0) {
-		int OPR = 0;
+	if (argc < 5) 
+	{
 		printf("\t\t\tCIPHERUNICORN-A\nIn cryptography, CIPHERUNICORN-A is a block cipher created by NEC in 2000.\nIt is among the cryptographic techniques recommended for Japanese government use.");
-		int OPR2;
-		printf("\n\nThis program allows you to encrypt and decipher your .TXT files.\n\n\n\tInstructions:\n1. Encription\n2. Decipherment\n3. Copyrights\n4. Exit\n\nCommand:\t");
-		scanf("%d", &OPR2);
-		printf("\n\n\n");
-		switch (OPR2) {
-		case 1:
-			printf("In command-line open the program by entering the file destination. Then do like in exapmple:\n\n\t\tC:\\1.exe E:\\MyText.txt E:\\EncryptedText.txt crypt E:\\KEY.txt \n\nwhere 'crypt' is a command to crypt");
-			break;
-		case 2:
-			printf("In command-line open the program by entering the file destination. Then do like in example:\n\n\t\tC:\\1.exe E:\\EncryptedText.txt E:\\Desiphered.txt decrypt E:\\KEY.txt \n\nwhere 'decrypt' is a command to decrypt");
-			break;
-		case 3:
-			printf("Made by Andrey Dyatlov, Moscow, 2013.\nAll rights reserved");
-			break;
-		case 4:
-			return 0;
-			break;
-		default:
-			printf("ERROR!!!");
-			break;
-		}
+		printf("\nIn command-line open the program by entering the file destination. Then do like in exapmple:\n\n\tC:\\1.exe E:\\MyText.txt E:\\EncryptedText.txt crypt E:\\KEY.txt \n\nwhere 'crypt' is a command to crypt");
+		printf("\nIn command-line open the program by entering the file destination. Then do like in example:\n\n\tC:\\1.exe E:\\EncryptedText.txt E:\\Desiphered.txt decrypt E:\\KEY.txt \n\nwhere 'decrypt' is a command to decrypt");
+		printf("\nMade by Andrey Dyatlov, Moscow, 2013.\nAll rights reserved");
 	}
-	else {
-			FILE * f;
-	f = fopen(argv[4], "r");
-	fgets(ExtKey, 288, f);
-	setup(ExtKey);
-	fclose(f);
+	else 
+	{
+		FILE * f;
+		f = fopen(argv[4], "r");
+		fgets(ExtKey, 288, f);
+		setup(ExtKey);
+		fclose(f);
 		READ(argv[1], argv[2], argv[3]);
 	}
 	return 0;
