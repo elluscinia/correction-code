@@ -287,7 +287,7 @@ static void F(u32 ida, u32 idb, u32 *k, u32 *oda, u32 *odb)
 	*odb = wx1 ^ wk0;
 }
 
-void TOCRYPT (unsigned char * DESTANATION, unsigned char * FINAL, unsigned char * DESTANATION2, int BUFFER)
+void TOCRYPT (char * DESTANATION, char * FINAL, int BUFFER)
 {
 	int SIZE;
 	unsigned char * STRING = (unsigned char*)malloc(BUFFER + 1);
@@ -339,7 +339,7 @@ void TOCRYPT (unsigned char * DESTANATION, unsigned char * FINAL, unsigned char 
 	free(STRING);
 }
 
-void TODECRYPT (unsigned char * DESTANATION, unsigned char * FINAL, unsigned char * DESTANATION2, int BUFFER)
+void TODECRYPT (char * DESTANATION, char * FINAL, int BUFFER)
 {
 	int SIZE;
 	unsigned char * STRING = (unsigned char*)malloc(BUFFER + 1);
@@ -410,16 +410,16 @@ int main(int argc, char * argv[]) {
 		FILE * f;
 		f = fopen(argv[4], "rb");
 		fseek (f , 0 , SEEK_END);
-  		lSize = ftell (f);
+  		int lSize = ftell (f);
 		fread(ExtKey, 1, lSize, f);
 		setup(ExtKey);
 		fclose(f);
 		int BUFFER = atoi(argv[5]);
 
 		if (strcmp("crypt", argv[3]) == 0)
-			TOCRYPT (argv[1], argv[2], argv[3], BUFFER);
+			TOCRYPT (argv[1], argv[2], BUFFER);
 		if (strcmp("decrypt", argv[3]) == 0)
-			TODECRYPT (argv[1], argv[2], argv[3], BUFFER);
+			TODECRYPT (argv[1], argv[2], BUFFER);
 	}
 	return 0;
 }
