@@ -355,7 +355,7 @@ void TODECRYPT (char * DESTANATION, char * FINAL, int BUFFER)
 
 	fseek(f, 0, SEEK_SET);
 
-	for (int j = 0; j < SIZE-rest; j += BUFFER)
+	for (int j = 0; j < SIZE - rest; j += BUFFER)
 	{
 		fread (STRING, 1, BUFFER, f);
 		for (int i = 0; i < (BUFFER); i += BLOCK)
@@ -403,23 +403,43 @@ int main(int argc, char * argv[]) {
 		printf("\t\t\tCIPHERUNICORN-A\nIn cryptography, CIPHERUNICORN-A is a block cipher created by NEC in 2000.\nIt is among the cryptographic techniques recommended for Japanese government use.");
 		printf("\nIn command-line open the program by entering the file destination. Then do like in exapmple:\n\n\tC:\\1.exe E:\\MyText.txt E:\\EncryptedText.txt crypt E:\\KEY.txt 1024\n\nwhere 'crypt' is a command to crypt");
 		printf("\nIn command-line open the program by entering the file destination. Then do like in example:\n\n\tC:\\1.exe E:\\EncryptedText.txt E:\\Desiphered.txt decrypt E:\\KEY.txt 256\n\nwhere 'decrypt' is a command to decrypt");
-		printf("\nMade by Andrey Dyatlov, Moscow, 2013.\nAll rights reserved");
+		printf("\nMade by Andrey Dyatlov\nCorrection by Soloveva Elena\n2013-2014, Moscow, BMSTU.");
 	}
 	else 
 	{
-		FILE * f;
-		f = fopen(argv[4], "rb");
-		fseek (f , 0 , SEEK_END);
-  		int lSize = ftell (f);
-		fread(ExtKey, 1, lSize, f);
-		setup(ExtKey);
-		fclose(f);
-		int BUFFER = atoi(argv[5]);
+		if ((strcmp("crypt", argv[3]) == 0) || (strcmp("decrypt", argv[3]) == 0))
+		{
+			clock_t time_begin, time_end;
+			FILE * f;
+			f = fopen(argv[4], "rb");
+			fseek (f , 0 , SEEK_END);
+  			int lSize = ftell (f);
+			fread(ExtKey, 1, lSize, f);
+			setup(ExtKey);
+			fclose(f);
+			int BUFFER = atoi(argv[5]);
 
-		if (strcmp("crypt", argv[3]) == 0)
-			TOCRYPT (argv[1], argv[2], BUFFER);
-		if (strcmp("decrypt", argv[3]) == 0)
-			TODECRYPT (argv[1], argv[2], BUFFER);
+			if (strcmp("crypt", argv[3]) == 0)
+			{
+				time_begin = clock();
+				TOCRYPT (argv[1], argv[2], BUFFER);
+				time_end = clock();
+				printf("Done. Runtime: %1.3f seconds\n", (double) (time_end - time_begin) / CLOCKS_PER_SEC);
+			}
+
+			if (strcmp("decrypt", argv[3]) == 0)
+			{
+				time_begin = clock();
+				TODECRYPT (argv[1], argv[2], BUFFER);
+				time_end = clock();
+				printf("Done. Runtime: %1.3f seconds\n", (double) (time_end - time_begin) / CLOCKS_PER_SEC);
+			}
+		}
+		
+		else
+		{
+			printf("Invalid arguments. Read help\n");
+		}
 	}
 	return 0;
 }
