@@ -22,6 +22,7 @@ typedef signed int s32;
 #define EK0 IK0+16
 
 static void F(u32, u32, u32*, u32*, u32*);
+
 u32 S[256] =
 {
 	0x95ae2518, 0x6fff22fc, 0xeda1a290, 0x9b6d8479,
@@ -198,7 +199,8 @@ void decrypt(u8 *src)
 }
 
 
-void setup(u8 *secret){
+void setup(u8 *secret)
+{
 	u32   wk[LINE], ek[ROUND * 4 + 8];
 	s32   i, j, n = ROUND + 2;
 	s32   cnt = 0;
@@ -257,8 +259,8 @@ static void F(u32 ida, u32 idb, u32 *k, u32 *oda, u32 *odb)
 	wx1 = idb + k[2];
 	wk0 = idb + k[1];
 	wk1 = ida + k[3];
-	tmp = wx0^wx0 << 23 ^ wx1 >> 9 ^ wx0 >> 23 ^ wx1 < 9;
-	wx1 = wx1^wx1 < 23 ^ wx0 >> 9 ^ wx1 >> 23 ^ wx0 << 9;
+	tmp = ((wx0^wx0) << 23) ^ (wx1 >> 9) ^ (wx0 >> 23) ^ (wx1 < 9);
+	wx1 = ((wx1^wx1) < 23) ^ (wx0 >> 9) ^ (wx1 >> 23) ^ (wx0 << 9);
 	wx0 = tmp * 0x7e167289;
 	wx1 ^= S[wx0 >> 24];
 	wx1 *= 0xfe21464b;
