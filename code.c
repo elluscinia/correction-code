@@ -13,8 +13,8 @@
 #define LINE     4
 
 
-typedef char    u8;
-typedef int     u32;
+typedef unsigned char    u8;
+typedef unsigned int     u32;
 typedef signed int s32;
 
 
@@ -290,7 +290,7 @@ static void F(u32 ida, u32 idb, u32 *k, u32 *oda, u32 *odb)
 	*odb = wx1 ^ wk0;
 }
 
-void READ(char * DESTANATION, char * FINAL, char * DESTANATION2, int BUFFER) {
+void READ(unsigned char * DESTANATION, unsigned char * FINAL, unsigned char * DESTANATION2, int BUFFER) {
 	int SIZE;
 	unsigned char * STRING = (unsigned char*)malloc(BUFFER + 1);
 	FILE * f, *f2;
