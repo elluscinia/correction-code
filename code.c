@@ -290,43 +290,92 @@ static void F(u32 ida, u32 idb, u32 *k, u32 *oda, u32 *odb)
 	*odb = wx1 ^ wk0;
 }
 
-
-
-void WRITE(char STRING[BLOCK], char * DESTANATION){
-	FILE * f;
-	f = fopen(DESTANATION, "a");
-	for (int i = 0; i < BLOCK; i++){
-		fprintf(f, "%c", STRING[i]);
-	}
-	fclose(f);
-}
-
-void READ(char * DESTANATION, char * FINAL, char * DESTANATION2) {
+void READ(char * DESTANATION, char * FINAL, char * DESTANATION2, int BUFFER) {
 	int SIZE;
-	char STRING[BLOCK];
-	FILE * f;
+	unsigned char * STRING = (unsigned char*)malloc(BUFFER + 1);
+	FILE * f, *f2;
 	f = fopen(DESTANATION, "rb");
+	f2 = fopen(FINAL, "wb");
 	fseek(f, 0, SEEK_END);
 	SIZE = ftell(f);
+	int rest = SIZE%BUFFER;
 	fseek(f, 0, SEEK_SET);
-	if (strcmp("crypt", DESTANATION2) == 0){
-		for (int i = 0; i < SIZE; i += BLOCK) {
-			fseek(f, i, SEEK_SET);
-			fread(STRING, 1, BLOCK, f);
-			crypt(STRING);
-			WRITE(STRING, FINAL);
+	if (strcmp("crypt", DESTANATION2) == 0)
+	{
+		for (int j = 0; j < SIZE-rest; j += BUFFER)
+		{
+			fread (STRING, 1, BUFFER, f);
+			for (int i = 0; i < (BUFFER); i += BLOCK)
+			{
+				crypt (&STRING[i]);
+			}
+			fwrite (STRING, 1, BUFFER, f2);
+		}
+
+		for (int i = 0; i < (rest/BLOCK); i++)
+		{
+			fread (STRING, 1, BLOCK, f);
+			crypt (STRING);
+			fwrite (STRING, 1, BLOCK, f2);
+		}
+
+		rest = rest%BLOCK;
+
+		if (rest != 0)
+		{
+			unsigned char reminder[16]; 
+			memset(reminder, 0, 16); 
+			fread(reminder, 1, rest, f);
+
+			reminder[rest] = 0x80; 
+
+			crypt(reminder); 
+
+			fwrite(reminder, 1, 16, f2); 
 		}
 	}
-	if (strcmp("decrypt", DESTANATION2) == 0){
-		for (int i = 0; i < SIZE; i += BLOCK) {
-			fseek(f, i, SEEK_SET);
-			fread(STRING, 1, BLOCK, f);
-			decrypt(STRING);
-			WRITE(STRING, FINAL);
+	if (strcmp("decrypt", DESTANATION2) == 0)
+	{
+		for (int j = 0; j < SIZE-rest; j += BUFFER)
+		{
+			fread (STRING, 1, BUFFER, f);
+			for (int i = 0; i < (BUFFER); i += BLOCK)
+			{
+				decrypt (&STRING[i]);
+			}
+			fwrite (STRING, 1, BUFFER, f2);
 		}
+
+		for (int i = 0; i < (rest/BLOCK)-1; i++)
+		{
+			fread (STRING, 1, BLOCK, f);
+			decrypt (STRING);
+			fwrite (STRING, 1, BLOCK, f2);
+		}
+
+		unsigned char reminder[BLOCK]; 
+		memset(reminder, 0, BLOCK); 
+		fread(reminder, 1, BLOCK, f); 
+
+		decrypt(reminder); 
+
+		int pos = BLOCK;
+
+		for (int i=0; i < BLOCK; i++)
+		{
+			if (reminder[i]==0x80)
+			{
+				pos = i;
+				break;
+			}
+		}
+
+		fwrite(reminder, 1, pos, f2); 
 	}
+
 	fclose(f);
-	printf("%d", SIZE);
+	fclose(f2);
+	free(STRING);
 }
 
 
@@ -335,8 +384,8 @@ int main(int argc, char * argv[]) {
 	if (argc < 5) 
 	{
 		printf("\t\t\tCIPHERUNICORN-A\nIn cryptography, CIPHERUNICORN-A is a block cipher created by NEC in 2000.\nIt is among the cryptographic techniques recommended for Japanese government use.");
-		printf("\nIn command-line open the program by entering the file destination. Then do like in exapmple:\n\n\tC:\\1.exe E:\\MyText.txt E:\\EncryptedText.txt crypt E:\\KEY.txt \n\nwhere 'crypt' is a command to crypt");
-		printf("\nIn command-line open the program by entering the file destination. Then do like in example:\n\n\tC:\\1.exe E:\\EncryptedText.txt E:\\Desiphered.txt decrypt E:\\KEY.txt \n\nwhere 'decrypt' is a command to decrypt");
+		printf("\nIn command-line open the program by entering the file destination. Then do like in exapmple:\n\n\tC:\\1.exe E:\\MyText.txt E:\\EncryptedText.txt crypt E:\\KEY.txt 1024\n\nwhere 'crypt' is a command to crypt");
+		printf("\nIn command-line open the program by entering the file destination. Then do like in example:\n\n\tC:\\1.exe E:\\EncryptedText.txt E:\\Desiphered.txt decrypt E:\\KEY.txt 1024\n\nwhere 'decrypt' is a command to decrypt");
 		printf("\nMade by Andrey Dyatlov, Moscow, 2013.\nAll rights reserved");
 	}
 	else 
@@ -346,7 +395,8 @@ int main(int argc, char * argv[]) {
 		fread(ExtKey, 1, 256, f);
 		setup(ExtKey);
 		fclose(f);
-		READ(argv[1], argv[2], argv[3]);
+		int BUFFER = atoi(argv[5]);
+		READ(argv[1], argv[2], argv[3], BUFFER);
 	}
 	return 0;
 }
