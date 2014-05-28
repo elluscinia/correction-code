@@ -3,7 +3,6 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include <memory.h>
 
 #define MODULO 4294967296
 #define BLOCK 16
@@ -248,10 +247,6 @@ void setup(u8 *secret){
 		memcpy(&eKey[EK0*i + 8], &ek[n * 2 + i], 4);
 		memcpy(&eKey[EK0* i + 12], &ek[n * 3 + i], 4);
 	}
-	FILE * f;
-	f = fopen("E:\\8.txt", "w");
-	fprintf(f, "%s\n%s", secret, eKey);
-	fclose(f);
 }
 
 
