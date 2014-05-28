@@ -409,7 +409,9 @@ int main(int argc, char * argv[]) {
 	{
 		FILE * f;
 		f = fopen(argv[4], "rb");
-		fread(ExtKey, 1, 256, f);
+		fseek (f , 0 , SEEK_END);
+  		lSize = ftell (f);
+		fread(ExtKey, 1, lSize, f);
 		setup(ExtKey);
 		fclose(f);
 		int BUFFER = atoi(argv[5]);
