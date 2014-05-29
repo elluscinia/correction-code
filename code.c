@@ -407,38 +407,50 @@ int main(int argc, char * argv[]) {
 	}
 	else 
 	{
-		if ((strcmp("crypt", argv[3]) == 0) || (strcmp("decrypt", argv[3]) == 0))
+		for (int i = 1; i < argc; i += 5)
 		{
-			clock_t time_begin, time_end;
-			FILE * f;
-			f = fopen(argv[4], "rb");
-			fseek (f , 0 , SEEK_END);
-  			int lSize = ftell (f);
-			fread(ExtKey, 1, lSize, f);
-			setup(ExtKey);
-			fclose(f);
-			int BUFFER = atoi(argv[5]);
-
-			if (strcmp("crypt", argv[3]) == 0)
+			if ((strcmp("crypt", argv[i + 2]) == 0) || (strcmp("decrypt", argv[i + 2]) == 0))
 			{
-				time_begin = clock();
-				TOCRYPT (argv[1], argv[2], BUFFER);
-				time_end = clock();
-				printf("Done. Runtime: %1.3f seconds\n", (double) (time_end - time_begin) / CLOCKS_PER_SEC);
-			}
+				clock_t time_begin, time_end;
+				FILE * f;
+				f = fopen(argv[i + 3], "rb");
+				fseek (f , 0 , SEEK_END);
+  				int lSize = ftell (f);
 
-			if (strcmp("decrypt", argv[3]) == 0)
-			{
-				time_begin = clock();
-				TODECRYPT (argv[1], argv[2], BUFFER);
-				time_end = clock();
-				printf("Done. Runtime: %1.3f seconds\n", (double) (time_end - time_begin) / CLOCKS_PER_SEC);
+  				if (lSize<=128)
+  				{
+  					fread(ExtKey, 1, lSize, f);
+  				}
+  				else
+  				{
+  					printf("Your key is too long, i read only 128 bytes from your key-file.\n");
+  					fread(ExtKey, 1, 128, f);
+  				}
+
+				setup(ExtKey);
+				fclose(f);
+				int BUFFER = atoi(argv[i + 4]);
+
+				if (strcmp("crypt", argv[i + 2]) == 0)
+				{
+					time_begin = clock();
+					TOCRYPT (argv[i], argv[i + 1], BUFFER);
+					time_end = clock();
+					printf("Done. Runtime: %1.3f seconds\n", (double) (time_end - time_begin) / CLOCKS_PER_SEC);
+				}
+
+				if (strcmp("decrypt", argv[i + 2]) == 0)
+				{
+					time_begin = clock();
+					TODECRYPT (argv[i], argv[i + 1], BUFFER);
+					time_end = clock();
+					printf("Done. Runtime: %1.3f seconds\n", (double) (time_end - time_begin) / CLOCKS_PER_SEC);
+				}
 			}
-		}
-		
-		else
-		{
-			printf("Invalid arguments. Read help\n");
+			else
+			{
+				printf("Invalid arguments. Read help\n");
+			}
 		}
 	}
 	return 0;
