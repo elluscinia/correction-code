@@ -287,13 +287,13 @@ static void F(u32 ida, u32 idb, u32 *k, u32 *oda, u32 *odb)
 	*odb = wx1 ^ wk0;
 }
 
-void TOCRYPT (char * DESTANATION, char * FINAL, int BUFFER)
+void TOCRYPT (char * DESTINATION, char * FINAL, int BUFFER)
 {
 	int SIZE;
 	unsigned char * STRING = (unsigned char*)malloc(BUFFER + 1);
 
 	FILE * f, *f2;
-	f = fopen(DESTANATION, "rb");
+	f = fopen(DESTINATION, "rb");
 	f2 = fopen(FINAL, "wb");
 
 	fseek(f, 0, SEEK_END);
@@ -339,13 +339,13 @@ void TOCRYPT (char * DESTANATION, char * FINAL, int BUFFER)
 	free(STRING);
 }
 
-void TODECRYPT (char * DESTANATION, char * FINAL, int BUFFER)
+void TODECRYPT (char * DESTINATION, char * FINAL, int BUFFER)
 {
 	int SIZE;
 	unsigned char * STRING = (unsigned char*)malloc(BUFFER + 1);
 
 	FILE * f, *f2;
-	f = fopen(DESTANATION, "rb");
+	f = fopen(DESTINATION, "rb");
 	f2 = fopen(FINAL, "wb");
 
 	fseek(f, 0, SEEK_END);
